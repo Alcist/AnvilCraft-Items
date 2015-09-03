@@ -1,4 +1,4 @@
-package com.alcist.pluginbase;
+package com.alcist.anvilcraft.items;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,4 +1,4 @@
-name: PluginBase
-main: com.alcist.pluginbase.Plugin
+name: AnvilCraft-Items
+main: com.alcist.anvilcraft.items.Plugin
 version: 1
 depend: []
