@@ -11,6 +11,8 @@ public class Plugin extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     @Override
