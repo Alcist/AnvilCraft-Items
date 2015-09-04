@@ -34,8 +34,8 @@ task copyPlugin(type: Copy, dependsOn: jar) {
     into pluginsFolder
 }
 
-
 dependencies {
     compile 'org.spigotmc:spigot-api:+'
+    compile project(':FireHelper/FireHelperAPI')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

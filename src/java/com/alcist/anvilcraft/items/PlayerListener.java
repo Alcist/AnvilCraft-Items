@@ -16,7 +16,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
         ItemStack item = new CustomItemFactory(Material.STICK)
-                .withId(JavaPlugin.getPlugin(Plugin.class), 10)
                 .withName("Varita del Principiante")
                 .withLore("Algo late muy adentro")
                 .build();
