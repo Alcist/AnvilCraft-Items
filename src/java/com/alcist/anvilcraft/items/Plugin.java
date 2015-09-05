@@ -9,20 +9,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * Created by istar on 03/08/14.
  */
-public class Plugin extends JavaPlugin {
+public class Plugin extends JavaPlugin implements AnvilCraftItems {
 
+    private Firebase firebase;
+    private FirebaseItemAdapter firebaseItemAdapter;
 
     @Override
     public void onEnable() {
         super.onEnable();
-        FireHelper fireHelper = (FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper");
 
-        Firebase firebase = fireHelper.getFirebase();
+        Firebase firebase = ((FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper")).getFirebase();
+        firebaseItemAdapter = new FirebaseItemAdapter(firebase);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
+    }
+
+    @Override
+    public ItemAdapter getItemData() {
+        return firebaseItemAdapter;
     }
 }
