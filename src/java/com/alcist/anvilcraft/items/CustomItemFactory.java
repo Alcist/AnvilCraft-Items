@@ -89,4 +89,8 @@ public class CustomItemFactory {
         return null;
     }
 
+    public static boolean isCustomItem(ItemStack itemStack) {
+        return getUuid(itemStack) != null;
+    }
+
 }

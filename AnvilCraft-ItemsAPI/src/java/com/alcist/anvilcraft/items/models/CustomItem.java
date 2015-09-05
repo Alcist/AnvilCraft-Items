@@ -12,5 +12,6 @@ public class CustomItem {
     public String uuid, name;
     public List<String> lore;
     public int material;
+    public List<String> effects;
 
 }
