@@ -2,6 +2,7 @@ package com.alcist.anvilcraft.items;
 
 
 import com.alcist.anvilcraft.items.effects.FireballEffect;
+import com.alcist.anvilcraft.items.effects.LightningEffect;
 import com.alcist.firehelper.FireHelper;
 import com.firebase.client.Firebase;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ public class Plugin extends JavaPlugin implements AnvilCraftItems {
         firebaseItemAdapter = new FirebaseItemAdapter(firebase);
 
         getServer().getPluginManager().registerEvents(new FireballEffect(), this);
+        getServer().getPluginManager().registerEvents(new LightningEffect(), this);
     }
 
     @Override
