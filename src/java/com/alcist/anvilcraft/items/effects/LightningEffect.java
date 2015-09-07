@@ -3,24 +3,27 @@ package com.alcist.anvilcraft.items.effects;
 import com.alcist.anvilcraft.items.CustomItemFactory;
 import com.alcist.anvilcraft.items.FirebaseItemAdapter;
 import com.alcist.anvilcraft.items.Plugin;
-import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Created by Adrián on 05/09/2015.
+ * Created by Adrián on 06/09/2015.
  */
-public class FireballEffect implements Effect {
+public class LightningEffect implements Effect {
 
-    public static final String effectName = Effects.FIREBALL.name;
+    public static final String effectName = Effects.LIGHTNING.name;
 
     @Override
     public void launchEffect(Player player) {
-        player.launchProjectile(Fireball.class);
+        Arrow arrow = player.launchProjectile(Arrow.class);
+        arrow.setMetadata("lightning", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
     }
 
     @Override
@@ -37,6 +40,17 @@ public class FireballEffect implements Effect {
                         launchEffect(player);
                     }
                 });
+            }
+        }
+    }
+
+    @EventHandler
+    public void onArrowHitsPlayer(EntityDamageByEntityEvent event) {
+        if(event.getDamager() instanceof Arrow) {
+            if(event.getDamager().getMetadata("lightning") != null) {
+                if(event.getDamager().getMetadata("lightning").get(0).asBoolean()) {
+                    event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+                }
             }
         }
     }

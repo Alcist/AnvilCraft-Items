@@ -1,8 +1,8 @@
 package com.alcist.anvilcraft.items;
 
-import java.nio.charset.Charset;
-
 import org.bukkit.ChatColor;
+
+import java.nio.charset.Charset;
 
 /**
  * Created by Adrián on 04/09/2015.

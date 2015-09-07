@@ -3,24 +3,31 @@ package com.alcist.anvilcraft.items.effects;
 import com.alcist.anvilcraft.items.CustomItemFactory;
 import com.alcist.anvilcraft.items.FirebaseItemAdapter;
 import com.alcist.anvilcraft.items.Plugin;
-import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
- * Created by Adrián on 05/09/2015.
+ * Created by Adrián on 06/09/2015.
  */
-public class FireballEffect implements Effect {
+public class WitherSkullEffect implements Effect {
 
-    public static final String effectName = Effects.FIREBALL.name;
+    public static final String effectName = Effects.WITHERSKULL.name;
 
     @Override
     public void launchEffect(Player player) {
-        player.launchProjectile(Fireball.class);
+        WitherSkull witherSkull = player.launchProjectile(WitherSkull.class);
+        witherSkull.setMetadata("witherskull", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
     }
 
     @Override
@@ -37,6 +44,20 @@ public class FireballEffect implements Effect {
                         launchEffect(player);
                     }
                 });
+            }
+        }
+    }
+
+    @EventHandler
+    public void onArrowHitsPlayer(EntityDamageByEntityEvent event) {
+        if(event.getDamager() instanceof WitherSkull) {
+            if(event.getDamager().getMetadata("witherskull") != null) {
+                if(event.getDamager().getMetadata("witherskull").get(0).asBoolean()) {
+                   if(event.getEntity() instanceof LivingEntity) {
+                       LivingEntity entity = (LivingEntity) event.getEntity();
+                       entity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 5000, 1));
+                   }
+                }
             }
         }
     }
