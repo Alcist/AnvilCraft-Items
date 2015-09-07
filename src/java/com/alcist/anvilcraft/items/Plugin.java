@@ -3,10 +3,13 @@ package com.alcist.anvilcraft.items;
 
 import com.alcist.anvilcraft.items.effects.FireballEffect;
 import com.alcist.anvilcraft.items.effects.LightningEffect;
+import com.alcist.anvilcraft.items.effects.WitherSkullEffect;
 import com.alcist.firehelper.FireHelper;
 import com.firebase.client.Firebase;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
 
 /**
  * Created by istar on 03/08/14.
@@ -14,17 +17,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Plugin extends JavaPlugin implements AnvilCraftItems {
 
     private Firebase firebase;
-    private FirebaseItemAdapter firebaseItemAdapter;
+    private HashMap<org.bukkit.plugin.Plugin, FirebaseItemAdapter> pluginPool = new HashMap<>();
 
     @Override
     public void onEnable() {
         super.onEnable();
 
-        Firebase firebase = ((FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper")).getFirebase();
-        firebaseItemAdapter = new FirebaseItemAdapter(firebase);
+        firebase = ((FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper")).getFirebase();
 
         getServer().getPluginManager().registerEvents(new FireballEffect(), this);
         getServer().getPluginManager().registerEvents(new LightningEffect(), this);
+        getServer().getPluginManager().registerEvents(new WitherSkullEffect(), this);
     }
 
     @Override
@@ -33,7 +36,10 @@ public class Plugin extends JavaPlugin implements AnvilCraftItems {
     }
 
     @Override
-    public ItemAdapter getItemData() {
-        return firebaseItemAdapter;
+    public ItemAdapter getItemData(org.bukkit.plugin.Plugin plugin) {
+        if(pluginPool.get(plugin) == null) {
+            pluginPool.put(plugin, new FirebaseItemAdapter(firebase, plugin));
+        }
+        return pluginPool.get(plugin);
     }
 }
