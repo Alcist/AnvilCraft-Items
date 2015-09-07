@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class FireballEffect implements Effect {
 
-    public static final String effectName = "fireball";
+    public static final String effectName = Effects.FIREBALL.name;
 
     @Override
     public void launchEffect(Player player) {
@@ -31,7 +31,7 @@ public class FireballEffect implements Effect {
             ItemStack itemStack = player.getItemInHand();
             if(CustomItemFactory.isCustomItem(itemStack)) {
                 Plugin plugin = JavaPlugin.getPlugin(Plugin.class);
-                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData();
+                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData(plugin);
                 firebaseItemAdapter.getItem(CustomItemFactory.getUuid(itemStack), response -> {
                     if(response.effects.contains(effectName)) {
                         launchEffect(player);

@@ -4,7 +4,9 @@ import com.alcist.anvilcraft.items.CustomItemFactory;
 import com.alcist.anvilcraft.items.FirebaseItemAdapter;
 import com.alcist.anvilcraft.items.Plugin;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -12,18 +14,20 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * Created by Adrián on 06/09/2015.
  */
-public class LightningEffect implements Effect {
+public class WitherSkullEffect implements Effect {
 
-    public static final String effectName = Effects.LIGHTNING.name;
+    public static final String effectName = Effects.WITHERSKULL.name;
 
     @Override
     public void launchEffect(Player player) {
-        Arrow arrow = player.launchProjectile(Arrow.class);
-        arrow.setMetadata("lightning", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
+        WitherSkull witherSkull = player.launchProjectile(WitherSkull.class);
+        witherSkull.setMetadata("witherskull", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
     }
 
     @Override
@@ -46,10 +50,13 @@ public class LightningEffect implements Effect {
 
     @EventHandler
     public void onArrowHitsPlayer(EntityDamageByEntityEvent event) {
-        if(event.getDamager() instanceof Arrow) {
-            if(event.getDamager().getMetadata("lightning") != null) {
-                if(event.getDamager().getMetadata("lightning").get(0).asBoolean()) {
-                    event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+        if(event.getDamager() instanceof WitherSkull) {
+            if(event.getDamager().getMetadata("witherskull") != null) {
+                if(event.getDamager().getMetadata("witherskull").get(0).asBoolean()) {
+                   if(event.getEntity() instanceof LivingEntity) {
+                       LivingEntity entity = (LivingEntity) event.getEntity();
+                       entity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 5000, 1));
+                   }
                 }
             }
         }
