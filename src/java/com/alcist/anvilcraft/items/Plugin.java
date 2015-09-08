@@ -17,13 +17,14 @@ import java.util.HashMap;
 public class Plugin extends JavaPlugin implements AnvilCraftItems {
 
     private Firebase firebase;
-    private HashMap<org.bukkit.plugin.Plugin, FirebaseItemAdapter> pluginPool = new HashMap<>();
+    private FirebaseItemAdapter firebaseItemAdapter;
 
     @Override
     public void onEnable() {
         super.onEnable();
 
         firebase = ((FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper")).getFirebase();
+        firebaseItemAdapter = new FirebaseItemAdapter(firebase);
 
         getServer().getPluginManager().registerEvents(new FireballEffect(), this);
         getServer().getPluginManager().registerEvents(new LightningEffect(), this);
@@ -36,10 +37,7 @@ public class Plugin extends JavaPlugin implements AnvilCraftItems {
     }
 
     @Override
-    public ItemAdapter getItemData(org.bukkit.plugin.Plugin plugin) {
-        if(pluginPool.get(plugin) == null) {
-            pluginPool.put(plugin, new FirebaseItemAdapter(firebase, plugin));
-        }
-        return pluginPool.get(plugin);
+    public ItemAdapter getItemData() {
+        return firebaseItemAdapter;
     }
 }

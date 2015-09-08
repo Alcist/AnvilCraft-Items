@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -20,7 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 /**
  * Created by Adrián on 06/09/2015.
  */
-public class WitherSkullEffect implements Effect {
+public class WitherSkullEffect implements Listener, Effect {
 
     public static final String effectName = Effects.WITHERSKULL.name;
 
@@ -30,7 +31,6 @@ public class WitherSkullEffect implements Effect {
         witherSkull.setMetadata("witherskull", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
     }
 
-    @Override
     @EventHandler
     public void onEffect(PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -38,7 +38,7 @@ public class WitherSkullEffect implements Effect {
             ItemStack itemStack = player.getItemInHand();
             if(CustomItemFactory.isCustomItem(itemStack)) {
                 Plugin plugin = JavaPlugin.getPlugin(Plugin.class);
-                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData(plugin);
+                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData();
                 firebaseItemAdapter.getItem(CustomItemFactory.getUuid(itemStack), response -> {
                     if(response.effects.contains(effectName)) {
                         launchEffect(player);

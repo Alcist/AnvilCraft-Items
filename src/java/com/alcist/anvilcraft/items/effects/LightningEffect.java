@@ -6,6 +6,7 @@ import com.alcist.anvilcraft.items.Plugin;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * Created by Adrián on 06/09/2015.
  */
-public class LightningEffect implements Effect {
+public class LightningEffect implements Listener, Effect {
 
     public static final String effectName = Effects.LIGHTNING.name;
 
@@ -26,7 +27,6 @@ public class LightningEffect implements Effect {
         arrow.setMetadata("lightning", new FixedMetadataValue(JavaPlugin.getPlugin(Plugin.class), true));
     }
 
-    @Override
     @EventHandler
     public void onEffect(PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -34,7 +34,7 @@ public class LightningEffect implements Effect {
             ItemStack itemStack = player.getItemInHand();
             if(CustomItemFactory.isCustomItem(itemStack)) {
                 Plugin plugin = JavaPlugin.getPlugin(Plugin.class);
-                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData(plugin);
+                FirebaseItemAdapter firebaseItemAdapter = (FirebaseItemAdapter) plugin.getItemData();
                 firebaseItemAdapter.getItem(CustomItemFactory.getUuid(itemStack), response -> {
                     if(response.effects.contains(effectName)) {
                         launchEffect(player);

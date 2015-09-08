@@ -14,12 +14,12 @@ public interface ItemAdapter {
 
     void getItem(String itemUuid, Callback<CustomItem> callback);
 
-    void getAllItems(Callback<HashMap<String, CustomItem>> callback);
+    void getAllItems(Callback<CustomItemResponse> callback);
 
     void saveItem(CustomItem itemStack);
 
     void removeItem(String itemUuid);
 
-    void removeCallbacks(Plugin plugin);
+    class CustomItemResponse extends HashMap<String, CustomItem> {}
 
 }
