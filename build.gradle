@@ -50,6 +50,7 @@ dependencies {
     compile 'org.spigotmc:spigot-api:+'
     compile project(':FireHelper/FireHelperAPI')
     bundle project(':AnvilCraft-ItemsAPI')
+    bundle project(':CommandAPI')
     compile configurations.bundle
     testCompile 'junit:junit:4.11'
     testCompile 'org.powermock:powermock-module-junit4:1.4.9'

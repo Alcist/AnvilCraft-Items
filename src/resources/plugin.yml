@@ -2,3 +2,9 @@ name: AnvilCraft-Items
 main: com.alcist.anvilcraft.items.Plugin
 version: 1
 depend: [FireHelper]
+
+commands:
+  items:
+    description: Base command for AnvilCraft Items
+  it:
+    description: Base command for AnvilCraft Items

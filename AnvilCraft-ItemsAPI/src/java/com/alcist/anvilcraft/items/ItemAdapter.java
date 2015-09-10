@@ -1,9 +1,8 @@
 package com.alcist.anvilcraft.items;
 
-import com.alcist.anvilcraft.items.models.CustomItem;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
+import com.alcist.anvilcraft.items.models.CustomItemStack;
 import com.alcist.firehelper.Callback;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 
@@ -12,14 +11,14 @@ import java.util.HashMap;
  */
 public interface ItemAdapter {
 
-    void getItem(String itemUuid, Callback<CustomItem> callback);
+    void getItem(String itemUuid, Callback<CustomItemMeta> callback);
 
     void getAllItems(Callback<CustomItemResponse> callback);
 
-    void saveItem(CustomItem itemStack);
+    String saveItem(CustomItemMeta itemStack);
 
     void removeItem(String itemUuid);
 
-    class CustomItemResponse extends HashMap<String, CustomItem> {}
+    class CustomItemResponse extends HashMap<String, CustomItemMeta> {}
 
 }

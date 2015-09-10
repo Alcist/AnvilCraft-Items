@@ -1,15 +1,13 @@
 package com.alcist.anvilcraft.items;
 
-import com.alcist.anvilcraft.items.models.CustomItem;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
 import com.alcist.firehelper.BukkitFireListener;
 import com.alcist.firehelper.Callback;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.MapType;
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Adrián on 04/09/2015.
@@ -27,9 +25,9 @@ public class FirebaseItemAdapter implements ItemAdapter {
     }
 
     @Override
-    public void getItem(String itemUuid, Callback<CustomItem> callback) {
+    public void getItem(String itemUuid, Callback<CustomItemMeta> callback) {
         Query query = itemsRef.child(itemUuid);
-        query.addListenerForSingleValueEvent(bukkitFireListener.listen(CustomItem.class, callback));
+        query.addListenerForSingleValueEvent(bukkitFireListener.listen(CustomItemMeta.class, callback));
     }
 
     @Override
@@ -39,9 +37,33 @@ public class FirebaseItemAdapter implements ItemAdapter {
     }
 
     @Override
-    public void saveItem(CustomItem itemStack) {
+    public String saveItem(CustomItemMeta itemStack) {
         Firebase newItem = itemsRef.push();
-        newItem.setValue(itemStack);
+        newItem.setValue(itemStack.serialize());
+        return newItem.getKey();
+    }
+
+
+
+    public HashMap<String, Object> transform(HashMap<String, Object> map) {
+        map.forEach((key, value) -> {
+            key = key.replace(']', '}');
+            key = key.replace('[', '{');
+
+            if (value instanceof Map) {
+                map.put(key, transform((HashMap<String, Object>) value));
+            }
+            else if (value instanceof Short) {
+                map.put(key, ((Short) value).intValue());
+            }
+        });
+
+        return map;
+    }
+
+    public void save(HashMap<String, Object> o) {
+        Firebase newItem = itemsRef.push();
+        newItem.setValue(transform(o));
     }
 
     @Override
