@@ -2,6 +2,7 @@ package com.alcist.anvilcraft.items;
 
 import com.alcist.anvilcraft.items.commands.CreateItemCommand;
 import com.alcist.anvilcraft.items.commands.ListItemsCommand;
+import com.alcist.anvilcraft.items.commands.RemoveItemCommand;
 import com.alcist.commandapi.CommandHandler;
 import com.alcist.commandapi.CommandInfo;
 import com.alcist.commandapi.SubCommand;
@@ -27,7 +28,8 @@ public class ItemsCommandHandler extends CommandHandler {
     public Class<? extends SubCommand>[] getCommands() {
         return new Class[]{
                 ListItemsCommand.class,
-                CreateItemCommand.class
+                CreateItemCommand.class,
+                RemoveItemCommand.class
         };
     }
 }

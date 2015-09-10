@@ -39,31 +39,15 @@ public class FirebaseItemAdapter implements ItemAdapter {
     @Override
     public String saveItem(CustomItemMeta itemStack) {
         Firebase newItem = itemsRef.push();
-        newItem.setValue(itemStack.serialize());
+        newItem.setValue(itemStack);
         return newItem.getKey();
     }
 
-
-
-    public HashMap<String, Object> transform(HashMap<String, Object> map) {
-        map.forEach((key, value) -> {
-            key = key.replace(']', '}');
-            key = key.replace('[', '{');
-
-            if (value instanceof Map) {
-                map.put(key, transform((HashMap<String, Object>) value));
-            }
-            else if (value instanceof Short) {
-                map.put(key, ((Short) value).intValue());
-            }
-        });
-
-        return map;
-    }
-
-    public void save(HashMap<String, Object> o) {
-        Firebase newItem = itemsRef.push();
-        newItem.setValue(transform(o));
+    @Override
+    public void getItemByName(String name, Callback<CustomItemResponse> callback) {
+        itemsRef.orderByChild("name")
+                .equalTo(name)
+                .addListenerForSingleValueEvent(bukkitFireListener.listen(CustomItemResponse.class, callback));
     }
 
     @Override

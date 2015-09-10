@@ -17,6 +17,8 @@ public interface ItemAdapter {
 
     String saveItem(CustomItemMeta itemStack);
 
+    void getItemByName(String name, Callback<CustomItemResponse> callback);
+
     void removeItem(String itemUuid);
 
     class CustomItemResponse extends HashMap<String, CustomItemMeta> {}
