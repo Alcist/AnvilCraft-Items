@@ -6,7 +6,6 @@ import com.alcist.firehelper.Callback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

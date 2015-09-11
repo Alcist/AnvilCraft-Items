@@ -1,7 +1,5 @@
 package com.alcist.anvilcraft.items.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.*;
 
 /**

@@ -1,7 +1,10 @@
 package com.alcist.anvilcraft.items.listeners;
 
 import com.alcist.anvilcraft.items.Plugin;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
+import static com.alcist.anvilcraft.items.models.CustomItemMeta.*;
 import com.alcist.anvilcraft.items.models.CustomItemStack;
+import static com.alcist.anvilcraft.items.models.CustomItemStack.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,11 +12,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -33,13 +36,31 @@ public class ItemControlListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem().getItemStack();
         String id = CustomItemStack.getCustomIdFromStack(item);
-        if(id != null) {
-            event.setCancelled(true);
-            event.getItem().remove();
+        if(id == null) {
+
+            plugin.getItemData().getItem(item.getType().name(), meta -> {
+                if (meta == null) {
+                    meta = new CustomItemMeta();
+                    meta.put(MATERIAL, item.getType().name());
+                    if (item.getItemMeta() != null) {
+                        meta.put(NAME, item.getItemMeta().getDisplayName());
+                    }
+                    plugin.getItemData().saveItem(item.getType().name(), meta);
+                }
+                CustomItemStack stack = new CustomItemStack(meta);
+                stack.put(AMOUNT, item.getAmount());
+                plugin.getItemData().saveItemStack(item.getType().name(), stack);
+                player.getInventory().addItem(stack.toItemStack());
+            });
+        }
+        else {
             plugin.getItemData().getItemStack(id, custom -> {
                 player.getInventory().addItem(custom.toItemStack());
             });
         }
+
+        event.getItem().remove();
+        event.setCancelled(true);
     }
 
     @EventHandler
