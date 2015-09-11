@@ -1,5 +1,6 @@
 package com.alcist.anvilcraft.items;
 
+import com.alcist.anvilcraft.items.listeners.DeathCounterListener;
 import com.alcist.anvilcraft.items.listeners.ItemControlListener;
 import com.alcist.firehelper.FireHelper;
 import com.firebase.client.Firebase;
@@ -22,6 +23,7 @@ public class Plugin extends JavaPlugin implements AnvilCraftItems {
         firebaseItemAdapter = new FirebaseItemAdapter(firebase);
         new ItemsCommandHandler(this);
         getServer().getPluginManager().registerEvents(new ItemControlListener(), this);
+        getServer().getPluginManager().registerEvents(new DeathCounterListener(), this);
     }
 
     @Override

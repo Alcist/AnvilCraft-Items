@@ -61,7 +61,7 @@ public class GiveItemCommand extends SubCommand {
 
                 String id = JavaPlugin.getPlugin(Plugin.class).getItemData().saveItemStack(custom);
                 custom.setId(id);
-                
+
                 Player player = (Player) sender;
                 player.getInventory().addItem(custom.toItemStack());
             });

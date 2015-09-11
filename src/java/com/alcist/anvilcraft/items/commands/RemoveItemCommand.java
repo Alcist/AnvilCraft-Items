@@ -46,6 +46,7 @@ public class RemoveItemCommand extends SubCommand {
                     bundle.forEach((key, item) -> {
                         plugin.getItemData().removeItem(key);
                     });
+                    sender.sendMessage("The item has been removed.");
                 }
             });
         }
