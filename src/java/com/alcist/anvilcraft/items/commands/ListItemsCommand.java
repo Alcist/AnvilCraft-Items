@@ -1,6 +1,7 @@
 package com.alcist.anvilcraft.items.commands;
 
 import com.alcist.anvilcraft.items.Plugin;
+import static com.alcist.anvilcraft.items.models.CustomItemMeta.*;
 import com.alcist.commandapi.CommandInfo;
 import com.alcist.commandapi.SubCommand;
 import org.apache.commons.cli.CommandLine;
@@ -30,7 +31,7 @@ public class ListItemsCommand extends SubCommand {
         plugin.getItemData().getAllItems(items -> {
             if(items != null) {
                 items.forEach((key, item) -> {
-                    sender.sendMessage(item.getName());
+                    sender.sendMessage((String) item.get(NAME));
                 });
             }
             else {

@@ -15,12 +15,22 @@ public interface ItemAdapter {
 
     void getAllItems(Callback<CustomItemResponse> callback);
 
-    String saveItem(CustomItemMeta itemStack);
+    String saveItem(CustomItemMeta item);
+
+    void saveItem(String id, CustomItemMeta item);
 
     void getItemByName(String name, Callback<CustomItemResponse> callback);
 
     void removeItem(String itemUuid);
 
     class CustomItemResponse extends HashMap<String, CustomItemMeta> {}
+
+    void getItemStack(String itemId, Callback<CustomItemStack> callback);
+
+    String saveItemStack(CustomItemStack item);
+
+    void saveItemStack(String id, CustomItemStack item);
+    void removeItemStack(String id);
+
 
 }

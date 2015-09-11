@@ -3,6 +3,7 @@ package com.alcist.anvilcraft.items.commands;
 import com.alcist.anvilcraft.items.Plugin;
 import com.alcist.anvilcraft.items.models.CustomItemMeta;
 import com.alcist.commandapi.CommandInfo;
+import static com.alcist.anvilcraft.items.models.CustomItemMeta.*;
 import com.alcist.commandapi.SubCommand;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -63,7 +64,11 @@ public class CreateItemCommand extends SubCommand {
 
         @Override
         public boolean cancelBasedOnInput(ConversationContext context, String input) {
-            return input.equals("quit") || input.equals("exit") || input.equals("cancel");
+            if (input.equals("quit") || input.equals("exit") || input.equals("cancel")) {
+                context.getForWhom().sendRawMessage("Creation cancelled");
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -87,7 +92,7 @@ public class CreateItemCommand extends SubCommand {
 
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
-            context.setSessionData("name", input);
+            context.setSessionData(NAME, input);
             return next;
         }
     }
@@ -110,7 +115,7 @@ public class CreateItemCommand extends SubCommand {
 
             Material material = Material.matchMaterial(input);
             if(material != null) {
-                context.setSessionData("material", material);
+                context.setSessionData(MATERIAL, material);
                 return next;
             }
             else {
@@ -135,7 +140,6 @@ public class CreateItemCommand extends SubCommand {
         @Override
         protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
             if(input) {
-                context.getForWhom().sendRawMessage("Creation cancelled");
                 return END_OF_CONVERSATION;
             }
             else {

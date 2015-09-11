@@ -4,7 +4,6 @@ import com.alcist.anvilcraft.items.Plugin;
 import com.alcist.commandapi.CommandInfo;
 import com.alcist.commandapi.SubCommand;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
