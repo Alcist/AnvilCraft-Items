@@ -43,8 +43,8 @@ public class CreateItemCommand extends SubCommand {
                     .addConversationAbandonedListener((conversation) -> {
                         if (conversation.gracefulExit()) {
                             Map<Object, Object> session = conversation.getContext().getAllSessionData();
-                            CustomItemMeta meta = new CustomItemMeta((Map)session);
-                            plugin.getItemData().saveItem(meta);
+                            CustomItemMeta meta = new CustomItemMeta(session);
+                            plugin.getItemMetaAdapter().saveItem(meta);
                             sender.sendMessage("Item created");
                         }
                     })

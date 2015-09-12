@@ -4,3 +4,6 @@
 [submodule "CommandAPI"]
 	path = CommandAPI
 	url = https://Istar-Eldritch@github.com/Alcist/CommandAPI.git
+[submodule "Item-NBT-API"]
+	path = Item-NBT-API
+	url = https://github.com/tr7zw/Item-NBT-API.git

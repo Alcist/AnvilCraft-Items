@@ -16,8 +16,8 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 
 /**
@@ -36,25 +36,31 @@ public class ItemControlListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem().getItemStack();
         String id = CustomItemStack.getCustomIdFromStack(item);
-        if(id == null) {
-
-            plugin.getItemData().getItem(item.getType().name(), meta -> {
-                if (meta == null) {
-                    meta = new CustomItemMeta();
-                    meta.put(MATERIAL, item.getType().name());
-                    if (item.getItemMeta() != null) {
-                        meta.put(NAME, item.getItemMeta().getDisplayName());
-                    }
-                    plugin.getItemData().saveItem(item.getType().name(), meta);
+        if(id == null ) {
+            String metaId = item.getType().name() + ":" + item.getDurability();
+            plugin.getItemMetaAdapter().getItem(metaId, meta -> {
+                CustomItemMeta pMeta = (CustomItemMeta) meta;
+                if(pMeta == null) {
+                    CustomItemMeta cMeta = new CustomItemMeta();
+                    cMeta.put(MATERIAL, item.getType().name());
+                    cMeta.put(TYPE, (int) item.getDurability());
+                    plugin.getItemMetaAdapter().saveItem(metaId, meta);
+                    pMeta = cMeta;
                 }
-                CustomItemStack stack = new CustomItemStack(meta);
+
+                CustomItemStack stack = new CustomItemStack(pMeta);
                 stack.put(AMOUNT, item.getAmount());
-                plugin.getItemData().saveItemStack(item.getType().name(), stack);
+                plugin.getItemStackAdapter().saveItem(stack);
+                if(player.getInventory().contains(item.getType())) {
+                    player.getInventory().getContents();
+                }
+
                 player.getInventory().addItem(stack.toItemStack());
+                
             });
         }
         else {
-            plugin.getItemData().getItemStack(id, custom -> {
+            plugin.getItemStackAdapter().getItem(id, custom -> {
                 player.getInventory().addItem(custom.toItemStack());
             });
         }
@@ -71,11 +77,10 @@ public class ItemControlListener implements Listener {
         if(id != null) {
             event.setCancelled(true);
             event.getItem().remove();
-            plugin.getItemData().getItemStack(id, custom -> {
+            plugin.getItemStackAdapter().getItem(id, custom -> {
                 inventory.addItem(custom.toItemStack());
             });
         }
-        //TODO Should we handle all minecraft items as custom items?
     }
 
     @EventHandler
@@ -83,7 +88,7 @@ public class ItemControlListener implements Listener {
         ItemStack item = event.getEntity().getItemStack();
         String id = CustomItemStack.getCustomIdFromStack(item);
         if(id != null) {
-            JavaPlugin.getPlugin(Plugin.class).getItemData().removeItemStack(id);
+            JavaPlugin.getPlugin(Plugin.class).getItemMetaAdapter().removeItem(id);
         }
     }
 
@@ -94,7 +99,7 @@ public class ItemControlListener implements Listener {
             ItemStack item = ((Item) event.getEntity()).getItemStack();
             String id = CustomItemStack.getCustomIdFromStack(item);
             if(id != null) {
-                plugin.getItemData().removeItemStack(id);
+                plugin.getItemStackAdapter().removeItem(id);
             }
         }
     }

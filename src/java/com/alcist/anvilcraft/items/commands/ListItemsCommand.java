@@ -1,7 +1,11 @@
 package com.alcist.anvilcraft.items.commands;
 
+import com.alcist.anvilcraft.items.PersistenceAdapter;
 import com.alcist.anvilcraft.items.Plugin;
 import static com.alcist.anvilcraft.items.models.CustomItemMeta.*;
+
+import com.alcist.anvilcraft.items.adapters.FirebaseItemMetaAdapter;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
 import com.alcist.commandapi.CommandInfo;
 import com.alcist.commandapi.SubCommand;
 import org.apache.commons.cli.CommandLine;
@@ -28,9 +32,9 @@ public class ListItemsCommand extends SubCommand {
 
     @Override
     public boolean execute(CommandSender sender, CommandLine commandLine, String... args) {
-        plugin.getItemData().getAllItems(items -> {
-            if(items != null) {
-                items.forEach((key, item) -> {
+        plugin.getItemMetaAdapter().getAllItems(bundle -> {
+            if(bundle != null) {
+                bundle.forEach((key, item) -> {
                     sender.sendMessage((String) item.get(NAME));
                 });
             }

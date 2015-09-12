@@ -33,10 +33,11 @@ public class DeathCounterListener implements Listener {
                 String weaponId = CustomItemStack.getCustomIdFromStack(weapon);
 
                 if( weaponId != null) {
-                    plugin.getItemData().getItemStack(weaponId, custom -> {
-                        custom.increaseDeaths(dead);
-                        plugin.getItemData().saveItemStack(weaponId, custom);
-                        weapon.setItemMeta(custom.toItemStack().getItemMeta());
+                    plugin.getItemStackAdapter().getItem(weaponId, custom -> {
+                        CustomItemStack mid = (CustomItemStack) custom;
+                        mid.increaseDeaths(dead);
+                        plugin.getItemStackAdapter().saveItem(weaponId, mid);
+                        weapon.setItemMeta(mid.toItemStack().getItemMeta());
                     });
                 }
             }

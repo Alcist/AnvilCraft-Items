@@ -1,6 +1,8 @@
 package com.alcist.anvilcraft.items.commands;
 
+import com.alcist.anvilcraft.items.PersistenceAdapter;
 import com.alcist.anvilcraft.items.Plugin;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
 import com.alcist.commandapi.CommandInfo;
 import com.alcist.commandapi.SubCommand;
 import org.apache.commons.cli.CommandLine;
@@ -41,12 +43,15 @@ public class RemoveItemCommand extends SubCommand {
                     name.append(' ');
                 }
             });
-            plugin.getItemData().getItemByName(name.toString(), (bundle) -> {
-                if (bundle != null) {
+            plugin.getItemMetaAdapter().getItemByName(name.toString(), (bundle) -> {
+                if (bundle != null && bundle.size() > 0) {
                     bundle.forEach((key, item) -> {
-                        plugin.getItemData().removeItem(key);
+                        plugin.getItemMetaAdapter().removeItem(key);
                     });
                     sender.sendMessage("The item has been removed.");
+                }
+                else {
+                    sender.sendMessage("There's no item with that name.");
                 }
             });
         }

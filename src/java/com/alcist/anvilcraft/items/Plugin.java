@@ -1,7 +1,11 @@
 package com.alcist.anvilcraft.items;
 
+import com.alcist.anvilcraft.items.adapters.FirebaseItemMetaAdapter;
+import com.alcist.anvilcraft.items.adapters.FirebaseItemStackAdapter;
 import com.alcist.anvilcraft.items.listeners.DeathCounterListener;
 import com.alcist.anvilcraft.items.listeners.ItemControlListener;
+import com.alcist.anvilcraft.items.models.ICustomItemMeta;
+import com.alcist.anvilcraft.items.models.ICustomItemStack;
 import com.alcist.firehelper.FireHelper;
 import com.firebase.client.Firebase;
 import org.bukkit.Bukkit;
@@ -13,14 +17,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Plugin extends JavaPlugin implements AnvilCraftItems {
 
     private Firebase firebase;
-    private FirebaseItemAdapter firebaseItemAdapter;
+    private FirebaseItemMetaAdapter firebaseItemMetaAdapter;
+    private FirebaseItemStackAdapter firebaseItemStackAdapter;
 
     @Override
     public void onEnable() {
         super.onEnable();
 
         firebase = ((FireHelper) Bukkit.getPluginManager().getPlugin("FireHelper")).getFirebase();
-        firebaseItemAdapter = new FirebaseItemAdapter(firebase);
+        firebaseItemMetaAdapter = new FirebaseItemMetaAdapter(firebase);
+        firebaseItemStackAdapter = new FirebaseItemStackAdapter(firebase);
+
         new ItemsCommandHandler(this);
         getServer().getPluginManager().registerEvents(new ItemControlListener(), this);
         getServer().getPluginManager().registerEvents(new DeathCounterListener(), this);
@@ -32,7 +39,12 @@ public class Plugin extends JavaPlugin implements AnvilCraftItems {
     }
 
     @Override
-    public ItemAdapter getItemData() {
-        return firebaseItemAdapter;
+    public PersistenceAdapter<ICustomItemMeta> getItemMetaAdapter() {
+        return firebaseItemMetaAdapter;
+    }
+
+    @Override
+    public PersistenceAdapter<ICustomItemStack> getItemStackAdapter() {
+        return firebaseItemStackAdapter;
     }
 }

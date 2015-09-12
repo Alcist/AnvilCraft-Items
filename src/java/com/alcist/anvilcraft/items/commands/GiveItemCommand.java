@@ -1,6 +1,8 @@
 package com.alcist.anvilcraft.items.commands;
 
+import com.alcist.anvilcraft.items.PersistenceAdapter;
 import com.alcist.anvilcraft.items.Plugin;
+import com.alcist.anvilcraft.items.models.CustomItemMeta;
 import com.alcist.anvilcraft.items.models.CustomItemStack;
 import com.alcist.commandapi.CommandInfo;
 import static com.alcist.anvilcraft.items.models.CustomItemStack.*;
@@ -38,33 +40,38 @@ public class GiveItemCommand extends SubCommand {
             }
         });
 
-        JavaPlugin.getPlugin(Plugin.class).getItemData().getItemByName(name.toString(), bundle -> {
-            bundle.forEach((key, item) -> {
-                CustomItemStack custom = new CustomItemStack(item);
+        JavaPlugin.getPlugin(Plugin.class).getItemMetaAdapter().getItemByName(name.toString(), bundle -> {
 
-                try {
-                    if(commandLine.hasOption("amount")) {
-                        Number size = (Number) ((HashMap) custom.get(META)).get(STACK_SIZE);
-                        int amount = Integer.valueOf(commandLine.getOptionValue("amount"),10);
-                        if (size != null && size.intValue() - amount > 0) {
-                            custom.put(AMOUNT, amount);
+            if (bundle != null && bundle.size() > 0) {
+                bundle.forEach((key, item) -> {
+                    CustomItemStack custom = new CustomItemStack(item);
+
+                    try {
+                        if (commandLine.hasOption("amount")) {
+                            Number size = (Number) ((HashMap) custom.get(META)).get(STACK_SIZE);
+                            int amount = Integer.valueOf(commandLine.getOptionValue("amount"), 10);
+                            if (size != null && size.intValue() - amount > 0) {
+                                custom.put(AMOUNT, amount);
+                            } else {
+                                sender.sendMessage("The stack size for this item is limited.");
+                                return;
+                            }
                         }
-                        else {
-                            sender.sendMessage("The stack size for this item is limited.");
-                            return;
-                        }
+                    } catch (Exception e) {
+                        sender.sendMessage("Invalid value for amount");
+                        return;
                     }
-                } catch (Exception e) {
-                    sender.sendMessage("Invalid value for amount");
-                    return;
-                }
 
-                String id = JavaPlugin.getPlugin(Plugin.class).getItemData().saveItemStack(custom);
-                custom.setId(id);
+                    String id = JavaPlugin.getPlugin(Plugin.class).getItemStackAdapter().saveItem(custom);
+                    custom.setId(id);
 
-                Player player = (Player) sender;
-                player.getInventory().addItem(custom.toItemStack());
-            });
+                    Player player = (Player) sender;
+                    player.getInventory().addItem(custom.toItemStack());
+                });
+            }
+            else {
+                sender.sendMessage("There's not item with that name.");
+            }
 
         });
         return true;

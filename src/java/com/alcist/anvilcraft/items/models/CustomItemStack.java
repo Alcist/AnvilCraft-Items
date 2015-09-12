@@ -2,6 +2,8 @@ package com.alcist.anvilcraft.items.models;
 
 import com.alcist.anvilcraft.items.AnvilCraftItems;
 import com.alcist.anvilcraft.items.HiddenStringUtils;
+import com.alcist.anvilcraft.items.NBTUtils;
+import com.alcist.anvilcraft.items.Plugin;
 import com.alcist.firehelper.Callback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bukkit.Bukkit;
@@ -10,6 +12,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import static com.alcist.anvilcraft.items.models.CustomItemMeta.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +23,14 @@ import java.util.Map;
 /**
  * Created by istar on 09/09/15.
  */
-public class CustomItemStack extends CustomMap {
+public class CustomItemStack extends CustomMap implements ICustomItemStack {
 
     public static final String META = "meta";
     public static final String AMOUNT = "amount";
     public static final String DAMAGE = "damage";
     public static final String DEATHS = "deaths";
 
+    public static final String NBT_ID = "anvilcraft_items";
 
     private String id = null;
 
@@ -33,12 +38,12 @@ public class CustomItemStack extends CustomMap {
         put(META, new HashMap<>());
         put(AMOUNT, 1);
     }
-    public CustomItemStack(HashMap<Object, Object> map) {
+    public CustomItemStack(Map<Object, Object> map) {
         this();
         putAll(map);
     }
 
-    public CustomItemStack(CustomItemMeta meta) {
+    public CustomItemStack(ICustomItemMeta meta) {
         this();
         put(META, meta);
     }
@@ -47,6 +52,7 @@ public class CustomItemStack extends CustomMap {
     public ItemStack toItemStack() {
         CustomItemMeta meta = new CustomItemMeta(iGet(META));
         ItemStack itemStack = new ItemStack(Material.valueOf(meta.iGet(MATERIAL)));
+        itemStack.setDurability((short)(int) meta.iGet(TYPE));
         itemStack.setAmount(iGet(AMOUNT));
 
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -54,6 +60,7 @@ public class CustomItemStack extends CustomMap {
         itemMeta.setLore(getLore());
 
         itemStack.setItemMeta(itemMeta);
+        itemStack = NBTUtils.setString(itemStack, NBT_ID, id);
         return itemStack;
     }
 
@@ -68,16 +75,12 @@ public class CustomItemStack extends CustomMap {
     }
 
     @JsonIgnore
-    public static void getFromItemStack(ItemStack itemStack, Callback<CustomItemStack> cb) {
+    public static void getFromItemStack(ItemStack itemStack, Callback<ICustomItemStack> cb) {
         ItemMeta meta = itemStack.getItemMeta();
-        List<String> lore = meta.getLore();
         if(meta.hasLore() && HiddenStringUtils.hasHiddenString(meta.getLore().get(0))) {
             String id = HiddenStringUtils.extractHiddenString(meta.getLore().get(0));
-            AnvilCraftItems plugin = (AnvilCraftItems) Bukkit.getPluginManager().getPlugin("AnvilCraft-Items");
-            plugin.getItemData().getItemStack(id, item -> {
-                item.setId(id);
-                cb.onCallBack(item);
-            });
+            Plugin plugin = JavaPlugin.getPlugin(Plugin.class);
+            plugin.getItemStackAdapter().getItem(id, cb);
         }
         else {
             throw new IllegalArgumentException("The item provided is not a custom item");
@@ -86,21 +89,15 @@ public class CustomItemStack extends CustomMap {
 
     @JsonIgnore
     public static String getCustomIdFromStack(ItemStack itemStack) {
-        if(itemStack != null) {
-            ItemMeta meta = itemStack.getItemMeta();
-            if (meta != null && meta.hasLore() && HiddenStringUtils.hasHiddenString(meta.getLore().get(0))) {
-                String id = HiddenStringUtils.extractHiddenString(meta.getLore().get(0));
-                return id;
-            }
-        }
-        return null;
+        String id =  NBTUtils.getString(itemStack, NBT_ID);
+        id = id != null && id.isEmpty() ? null : id;
+        return id;
     }
 
     @JsonIgnore
     private List<String> getLore() {
-        String encodedId = HiddenStringUtils.encodeString(id);
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add(encodedId);
+
+        List<String> lore = new ArrayList<>();
 
         if(iGet(DAMAGE) != null) {
             lore.add("Status: " + (getDamageStatus().doubleValue() * 100) + "%");
